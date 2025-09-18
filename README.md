@@ -1,120 +1,29 @@
-# Fullstack Interview Challenge
+# Solution Documentation
 
-> [!IMPORTANT]
-> You should have received a google doc together with this repository that explains in detail the scope and context of the exercise, together with it's acceptance criteria and any other necessary information for the completion of the challenge.
+## Folder Hierarchy
 
-## Context
-
-You are working in the product team at eversports that is maintaining the eversports manager. You and your team are working on a bunch of features around memberships within the current quarter.
-
-The team also started an initiative in this quarter to modernize the codebase by refactoring features implemented in an old technology stack to a more modern one.  
-
-### Domain: Memberships
-
-A `Membership` allows a user to participate at any class the a specific sport venue within a specific timespan. Within this timespan, the membership is divided into `MembershipPeriods`. The MembershipPeriods represent billing periods that the user has to pay for.
-
-For the scope of this exercise, the domain model was reduced to a reasonable size. 
-
-#### Entity: Membership
-```ts
-interface Membership {
-    name: string // name of the membership
-    user: number // the user that the membership is assigned to
-    recurringPrice: number // price the user has to pay for every period
-    validFrom: Date // start of the validity
-    validUntil: Date // end of the validity
-    state: string // indicates the state of the membership
-    paymentMethod: string // which payment method will be used to pay for the periods
-    billingInterval: string // the interval unit of the periods
-    billingPeriods: number // the number of periods the membership has
-}
+```
+src/modern/
+├── domain/           # Various functions related to the application domain
+├── models/           # Types and entity definitions
+├── repository/       # The db/repo layer
+├── services/         # The app's business logic
+└── routes/           # Controller/endpoint definitions
 ```
 
-#### Entity: MembershipPeriod
-```ts
-interface MembershipPeriod {
-    membership: number // membership the period is attached to
-    start: Date // indicates the start of the period
-    end: Date // indicates the end of the period
-    state: string
-}
-```
+## Design Decisions
 
+For this assignment, I chose a "functional approach" to keep the solution simple and avoid over-engineering.
+I believe it really depends on the use-case, however in larger applications/enterprise I'd prefer to structure everythig
+with classes and then wire components together using DI or a common init file.
 
-## Task 1 - Modernization of the membership codebase (backend only)
+### Testing Strategy
 
-Before your team can start to implement new features, you guys decided to **modernize the backend codebase** first.
+Tests are collocated with their respective modules (e.g., `membership.routes.test.ts` next to `membership.routes.ts`).
+With that said, in a production app, I'd prefer having a separate `tests/` folder to better organize test files and keep the source code clean.
 
-Your task is to **refactor two endpoints** implemented in the **legacy codebase** that can be used to list and create memberships:
+## Improvements
 
-GET /legacy/memberships (`src/legacy/routes/membership.routes.js`)
-POST /legacy/memberships (`src/legacy/routes/membership.routes.js`)
-
-Your new implementation should be accessible through new endpoints in the **modern codebase** that are already prepared:
-
-GET /memberships (`src/modern/routes/membership.routes.ts`)
-POST /memberships (`src/modern/routes/membership.routes.ts`)
-
-When refactoring, you should consider the following aspects:
-
-- The response from the endpoints should be exactly the same. Use the same error messages that are used in the legacy implementation.
-- You write read- and maintainable code
-- You use Typescript instead of Javascript to enabled type safety
-- Your code is separated based on concerns
-- Your code is covered by automated tests to ensure the stability of the application
-
-> [!NOTE]
-> For the scope of this task, the data used is mocked within the json files `membership.json` and `membership-periods.json`
-
-> [!NOTE]
-> We provided you with an clean express.js server to run the example. For your implementations, feel free to use any library out there to help you with your solution. If you decide to choose another JavaScript/TypeScript http library/framework (eg. NestJs) update the run config described below if needed, and ensure that the routes of the described actions don't change.
-
-
-## Task 2 - Design an architecture to provide a membership export (conception only)
-
-The team discovered that users are interested in **exporting all of their memberships** from the system to run their own analysis once a month as a **CSV file**. Because the creation of the export file would take some seconds, the team decided to go for an **asynchronous process** for creating the file and sending it via email. The process will be triggered by an API call of the user. 
-
-Your task is to **map out a diagram** that visualizes the asynchronous process from receiving the request to sending the export file to the user. This diagram should include all software / infrastructure components that will be needed to make the process as stable and scalable as possible. 
-
-Because the team has other things to work on too, this task is timeboxed to **1 hour** and you should share the architecture diagram as a **PDF file**.
-
-> [!NOTE]
-> Feel free to use any tool out there to create your diagram. If you are not familiar with such a tool, you can use www.draw.io. 
-
-## Repository Intro
-In this repository you will find an plain express.js server the exposes API endpoints to consumers. For this exercise, the API endpoints are not protected.
-
-### Installation
-
-```sh
-npm install
-```
-
-### Usage
-
-```sh
-npm run start
-```
-
-### Run test
-```sh
-npm run test
-```
-
-## 🗒️ Conditions
-
-- You will have multiple days for the challenge, but most of our candidates spend around **8h to 10h** on this assignment.
-- You should put your code in GitHub or GitLab/Bitbucket and send us the link to your repository where we can find the source code. That means no ZIP files.
-- Please make sure to include any additional instructions in a readme in case you change something about the compilation or execution of the codebase.
-
-## 💻 Technologies:
-
-We believe that great developers are not bound to a specific technology set, but no matter their toolbox they are able to think critically about how to structure and design good code. For this exercise, we provided just a small and simple set of tools to run the a application and tests. Feel free to use any library out there to help you with your implementation.
-
-### Pre-installed
-
-- Express - https://expressjs.com/
-- TypeScript - https://www.typescriptlang.org/
-- Jest - https://jestjs.io/
-
-Best of luck and looking forward to what you are able to accomplish! 🙂
+- **Use Zod for validation**: Replace the custom validation functions with Zod schemas for better type safety and runtime validation
+- **Integration with frameworks**: Consider using Zod with Hono or tRPC to have nice validation with middleware
+- **Class-based approach for production**: For larger applications, consider structuring with classes and dependency injection (like NestJS) for better testability and maintainability (again, depends on the use-case and team preferences)
