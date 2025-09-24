@@ -26,3 +26,5 @@ However, in a production app, I'd prefer having a separate `tests/` folder to be
 - **Use Zod for validation**: Replace the custom validation functions with Zod schemas for better type safety and runtime validation
 - **Integration with frameworks**: Consider using Zod with Hono or tRPC to have robust validation with middleware
 - **Class-based approach for production**: For larger applications, consider structuring with classes and dependency injection (like NestJS) for better testability and maintainability (again, depends on the use-case and team preferences)
+
+[A brief overview of the Taks2](./EXPORT.md)
